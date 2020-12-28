@@ -3,7 +3,9 @@ package com.petz.avaliacao.domain.clientes;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -15,9 +17,13 @@ public class Pet implements Serializable {
 
     @Id
     private String id;
-   // private String tipo;
+    @NotNull
     private String nome;
+    @NotNull
     private int idade;
+    @NotNull
+    private Date dataCriacao;
+    private Date dataUltimaAlteracao;
     @ManyToOne(fetch = FetchType.LAZY)
     private Cliente dono;
 
@@ -25,10 +31,15 @@ public class Pet implements Serializable {
         this.id = id;
     }
 
+    public void atualizar(String nome, int idade){
+        this.nome = nome;
+        this.idade = idade;
+        this.dataUltimaAlteracao = new Date();
+    }
+
     public void setDono(Cliente dono){
         this.dono = dono;
     }
-
 
     @Override
     public boolean equals(Object o) {

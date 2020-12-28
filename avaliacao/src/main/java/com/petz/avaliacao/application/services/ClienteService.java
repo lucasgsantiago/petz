@@ -1,9 +1,6 @@
 package com.petz.avaliacao.application.services;
 
-import com.petz.avaliacao.application.commands.cliente.AdicionarPetCommand;
-import com.petz.avaliacao.application.commands.cliente.AlterarClienteCommand;
-import com.petz.avaliacao.application.commands.cliente.CriarClienteCommand;
-import com.petz.avaliacao.application.commands.cliente.DeletarPetCommand;
+import com.petz.avaliacao.application.commands.cliente.*;
 import com.petz.avaliacao.application.queries.cliente.projections.ClienteComPetsProjection;
 import com.petz.avaliacao.application.queries.cliente.responses.ClienteResponse;
 import com.petz.avaliacao.application.queries.cliente.responses.PageResponse;
@@ -58,13 +55,6 @@ public class ClienteService implements IClienteService {
     }
 
     @Override
-    public void adicionarPet(AdicionarPetCommand command) throws ClienteNotFoundException {
-        var cliente = verificarSeClienteExiste(command.donoId);
-        cliente.adicionarPet(mapper.converter(command));
-        respository.saveAndFlush(cliente);
-    }
-
-    @Override
     public ClienteComPetsProjection obterPorId(String id) throws ClienteNotFoundException {
         if(id == null ) throw new IllegalArgumentException("Identificador inválido:" + id);
         var cliente = verificarSeClienteExiste(id);
@@ -79,6 +69,19 @@ public class ClienteService implements IClienteService {
         //return mapper.converter(respository.buscarTodosClientes());
         //return respository.buscarTodosClientes();
         return respository.findAllClientes();
+    }
+
+    @Override
+    public PageResponse<ClienteResponse> obterClientes(Pageable pageable) {
+        var page = respository.findAll(pageable);
+        return new PageResponse<>(page.getSize(),page.getTotalPages(),page.getNumber(),page.getTotalElements(),mapper.converter(page.getContent()));
+    }
+
+    @Override
+    public void adicionarPet(AdicionarPetCommand command) throws ClienteNotFoundException {
+        var cliente = verificarSeClienteExiste(command.donoId);
+        cliente.adicionarPet(mapper.converter(command));
+        respository.saveAndFlush(cliente);
     }
 
     @Override
@@ -104,9 +107,10 @@ public class ClienteService implements IClienteService {
     }
 
     @Override
-    public PageResponse<ClienteResponse> obterClientes(Pageable pageable) {
-        var page = respository.findAll(pageable);
-        return new PageResponse<>(page.getSize(),page.getTotalPages(),page.getNumber(),page.getTotalElements(),mapper.converter(page.getContent()));
+    public void alterarPet(AlterarPetCommand command) throws ClienteNotFoundException, ResourceNotFoundException {
+        var cliente = verificarSeClienteExiste(command.donoId);
+        cliente.alterarPet(mapper.converter(command));
+        respository.saveAndFlush(cliente);
     }
 
     private void verificarSeClienteJaEstaCadastrado(String email) throws ClienteAlreadyRegisteredException {

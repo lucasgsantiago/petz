@@ -45,8 +45,19 @@ public class Cliente implements Serializable {
         if(pets == null){
             pets = new HashSet<>();
         }
+        pet.setDataCriacao(new Date());
         pet.setDono(this);
         pets.add(pet);
+    }
+
+    public void alterarPet(Pet newPet) throws ResourceNotFoundException {
+        if(pets.isEmpty()) throw new ResourceNotFoundException("Este Cliente não possui nenhum Pet cadastrado");
+        var pet = pets.stream().filter(p -> p.getId().equalsIgnoreCase(newPet.getId())).findFirst();
+        if(pet.isPresent()){
+            pet.get().atualizar(newPet.getNome(),newPet.getIdade());
+        }else{
+            throw new ResourceNotFoundException("Nenhum Pet foi encontrado com este Id: "+newPet.getId());
+        }
     }
 
     public void alterar(String nome, String email) {
@@ -61,11 +72,7 @@ public class Cliente implements Serializable {
         if(optPet.isPresent()){
             pets.remove(optPet.get());
         }
-//        pets.stream().filter(pet -> pet.getId().equalsIgnoreCase(petId)).findAny().ifPresentOrElse(
-//                pet ->
-//                        pets.remove(pet),
-//                        () -> new ResourceNotFoundException("Nenhum Pet foi encontrado com este Id: "+petId)
-//        );
 
     }
+
 }

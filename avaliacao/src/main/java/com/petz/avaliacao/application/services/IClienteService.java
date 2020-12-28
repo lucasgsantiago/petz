@@ -1,10 +1,7 @@
 package com.petz.avaliacao.application.services;
 
 
-import com.petz.avaliacao.application.commands.cliente.AdicionarPetCommand;
-import com.petz.avaliacao.application.commands.cliente.AlterarClienteCommand;
-import com.petz.avaliacao.application.commands.cliente.CriarClienteCommand;
-import com.petz.avaliacao.application.commands.cliente.DeletarPetCommand;
+import com.petz.avaliacao.application.commands.cliente.*;
 import com.petz.avaliacao.application.queries.cliente.projections.ClienteComPetsProjection;
 import com.petz.avaliacao.application.queries.cliente.responses.ClienteResponse;
 import com.petz.avaliacao.application.queries.cliente.responses.PageResponse;
@@ -26,13 +23,15 @@ public interface IClienteService {
     void adicionarCliente(CriarClienteCommand command) throws BusinessException, ClienteAlreadyRegisteredException;
     void alterarCliente(AlterarClienteCommand command) throws BusinessException, ResourceNotFoundException, ClienteNotFoundException;
     void deletarCliente(String id) throws ResourceNotFoundException, ClienteNotFoundException;
-    void adicionarPet(AdicionarPetCommand command) throws ResourceNotFoundException, ClienteNotFoundException;
-    ClienteComPetsProjection obterPorId(String id) throws ClienteNotFoundException;
     List<ClienteResponse> obterTodos();
+    PageResponse<ClienteResponse> obterClientes(Pageable pageable);
+    ClienteComPetsProjection obterPorId(String id) throws ClienteNotFoundException;
+    void adicionarPet(AdicionarPetCommand command) throws ResourceNotFoundException, ClienteNotFoundException;
+    void deletarPet(DeletarPetCommand command) throws ClienteNotFoundException, ResourceNotFoundException;
+    void alterarPet(AlterarPetCommand command) throws ClienteNotFoundException, ResourceNotFoundException;
     List<PetResponse> obterPets(String clienteId) throws ResourceNotFoundException, ClienteNotFoundException;
     Optional<PetComDonoResponse> obterPetPorId(String id);
 
-    void deletarPet(DeletarPetCommand command) throws ClienteNotFoundException, ResourceNotFoundException;
 
-    PageResponse<ClienteResponse> obterClientes(Pageable pageable);
+
 }

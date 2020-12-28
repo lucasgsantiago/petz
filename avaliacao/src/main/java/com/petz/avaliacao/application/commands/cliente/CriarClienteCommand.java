@@ -11,4 +11,11 @@ public class CriarClienteCommand {
     @NotNull
     @Email
     public String email;
+
+    public CriarClienteCommand() {}
+
+    public CriarClienteCommand(@NotNull String nome, @NotNull @Email String email) {
+        this.nome = nome;
+        this.email = email;
+    }
 }
