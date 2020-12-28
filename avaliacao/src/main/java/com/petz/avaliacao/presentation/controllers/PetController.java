@@ -2,6 +2,7 @@ package com.petz.avaliacao.presentation.controllers;
 
 import com.petz.avaliacao.application.commands.cliente.AdicionarPetCommand;
 import com.petz.avaliacao.application.commands.cliente.AlterarClienteCommand;
+import com.petz.avaliacao.application.queries.cliente.responses.PetComDonoResponse;
 import com.petz.avaliacao.application.queries.cliente.responses.PetResponse;
 import com.petz.avaliacao.application.services.IClienteService;
 import com.petz.avaliacao.wrapers.BusinessException;
@@ -28,7 +29,7 @@ public class PetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PetResponse> getById(@PathVariable String id) throws ResourceNotFoundException {
+    public ResponseEntity<PetComDonoResponse> getById(@PathVariable String id) throws ResourceNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(service.obterPetPorId(id).orElseThrow(() -> new ResourceNotFoundException("Nenhum Pet encontrado!")));
     }
 

@@ -1,4 +1,4 @@
-package com.petz.avaliacao.domain.Clientes;
+package com.petz.avaliacao.domain.clientes;
 
 import lombok.*;
 

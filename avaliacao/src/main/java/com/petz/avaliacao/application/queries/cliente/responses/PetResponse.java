@@ -1,13 +1,10 @@
 package com.petz.avaliacao.application.queries.cliente.responses;
 
-public class PetResponse {
-    public String id;
-    //public String tipo;
-    public String nome;
-    public int idade;
-    public Dono dono;
+import lombok.Value;
 
-    public static class Dono{
-        public String id;
-    }
+@Value
+public class PetResponse {
+    private final String id,nome;
+    private final int idade;
+    //public String tipo;
 }

@@ -4,13 +4,21 @@ import com.petz.avaliacao.application.commands.cliente.AdicionarPetCommand;
 import com.petz.avaliacao.application.commands.cliente.AlterarClienteCommand;
 import com.petz.avaliacao.application.commands.cliente.CriarClienteCommand;
 import com.petz.avaliacao.application.commands.cliente.DeletarPetCommand;
+import com.petz.avaliacao.application.queries.cliente.projections.ClienteComPetsProjection;
 import com.petz.avaliacao.application.queries.cliente.responses.ClienteResponse;
+import com.petz.avaliacao.application.queries.cliente.responses.PageResponse;
+import com.petz.avaliacao.application.queries.cliente.responses.PetComDonoResponse;
 import com.petz.avaliacao.application.queries.cliente.responses.PetResponse;
 import com.petz.avaliacao.application.services.IClienteService;
 import com.petz.avaliacao.wrapers.BusinessException;
 import com.petz.avaliacao.wrapers.ClienteAlreadyRegisteredException;
 import com.petz.avaliacao.wrapers.ClienteNotFoundException;
 import com.petz.avaliacao.wrapers.ResourceNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,31 +35,35 @@ public class ClienteController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("/all")
+    @Cacheable("clientes")
     public ResponseEntity<List<ClienteResponse>> get(){
         return ResponseEntity.status(HttpStatus.OK).body(service.obterTodos());
     }
 
-    @GetMapping("/all")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ClienteResponse> obterTodos(){
-        return service.obterTodos();
+    @Cacheable("clientes")
+    public PageResponse<ClienteResponse> obterClientes(@PageableDefault(value = 20, sort = "nome",size = 20,page = 0, direction = Sort.Direction.ASC) Pageable pageable){
+        return service.obterClientes(pageable);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ClienteResponse get(@PathVariable String id) throws ClienteNotFoundException {
+    public ClienteComPetsProjection obterCliente(@PathVariable String id) throws ClienteNotFoundException {
         return service.obterPorId(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @CacheEvict(value = "clientes", allEntries = true)
     public String criarCliente(@Valid @RequestBody CriarClienteCommand command) throws ClienteAlreadyRegisteredException, BusinessException {
         service.adicionarCliente(command);
         return command.id;
     }
 
     @PutMapping("/{id}")
+    @CacheEvict(value = "clientes", allEntries = true)
     public ResponseEntity<?> alterarCliente(@PathVariable String id, @Valid @RequestBody AlterarClienteCommand command) throws BusinessException, ResourceNotFoundException, ClienteNotFoundException {
         command.id = id;
         service.alterarCliente(command);
@@ -60,11 +72,13 @@ public class ClienteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "clientes", allEntries = true)
     public void delete(@PathVariable String id) throws ClienteNotFoundException, ResourceNotFoundException {
         service.deletarCliente(id);
     }
 
     @PostMapping("/{id}/pets")
+    @CacheEvict(value = "clientes", allEntries = true)
     public ResponseEntity<?> post(@PathVariable String id,@Valid @RequestBody AdicionarPetCommand command) throws ResourceNotFoundException, ClienteNotFoundException {
         command.donoId = id;
         service.adicionarPet(command);
@@ -79,11 +93,12 @@ public class ClienteController {
 
     @GetMapping("/{clienteId}/pets/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PetResponse> obterPetPorId(@PathVariable String clienteId,@PathVariable String id) throws ResourceNotFoundException {
+    public ResponseEntity<PetComDonoResponse> obterPetPorId(@PathVariable String clienteId, @PathVariable String id) throws ResourceNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(service.obterPetPorId(id).orElseThrow(() -> new ResourceNotFoundException("Nenhum Pet encontrado!")));
     }
 
     @PutMapping("/{clienteId}/pets/{id}")
+    @CacheEvict(value = "clientes", allEntries = true)
     public ResponseEntity<?> atualizarPet(@PathVariable String clienteId,@PathVariable String id, @Valid @RequestBody AlterarClienteCommand command) throws BusinessException, ResourceNotFoundException, ClienteNotFoundException {
         command.id = id;
         service.alterarCliente(command);
@@ -92,6 +107,7 @@ public class ClienteController {
 
     @DeleteMapping("/{clienteId}/pets/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "clientes", allEntries = true)
     public void deletarPet(@PathVariable String clienteId,@PathVariable String id) throws ResourceNotFoundException, ClienteNotFoundException {
         service.deletarPet(new DeletarPetCommand(clienteId,id));
     }

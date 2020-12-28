@@ -4,15 +4,22 @@ import com.petz.avaliacao.application.commands.cliente.AdicionarPetCommand;
 import com.petz.avaliacao.application.commands.cliente.AlterarClienteCommand;
 import com.petz.avaliacao.application.commands.cliente.CriarClienteCommand;
 import com.petz.avaliacao.application.commands.cliente.DeletarPetCommand;
+import com.petz.avaliacao.application.queries.cliente.projections.ClienteComPetsProjection;
 import com.petz.avaliacao.application.queries.cliente.responses.ClienteResponse;
+import com.petz.avaliacao.application.queries.cliente.responses.PageResponse;
+import com.petz.avaliacao.application.queries.cliente.responses.PetComDonoResponse;
 import com.petz.avaliacao.application.queries.cliente.responses.PetResponse;
-import com.petz.avaliacao.domain.Clientes.Cliente;
+import com.petz.avaliacao.domain.clientes.Cliente;
+import com.petz.avaliacao.infrastructure.mappers.ClienteMapper;
 import com.petz.avaliacao.infrastructure.repositories.ClienteRepository;
 import com.petz.avaliacao.infrastructure.repositories.PetRepository;
 import com.petz.avaliacao.wrapers.*;
 import lombok.AllArgsConstructor;
 import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,15 +65,20 @@ public class ClienteService implements IClienteService {
     }
 
     @Override
-    public ClienteResponse obterPorId(String id) throws ClienteNotFoundException {
+    public ClienteComPetsProjection obterPorId(String id) throws ClienteNotFoundException {
         if(id == null ) throw new IllegalArgumentException("Identificador inválido:" + id);
         var cliente = verificarSeClienteExiste(id);
-        return mapper.converter(cliente);
+        //return mapper.converter(cliente);
+        //return respository.findClienteById(id);
+        return respository.findClienteById(id,ClienteComPetsProjection.class);
     }
 
     @Override
     public List<ClienteResponse> obterTodos(){
-        return mapper.converter(respository.findAll());
+//        return mapper.converter(respository.findAll());
+        //return mapper.converter(respository.buscarTodosClientes());
+        //return respository.buscarTodosClientes();
+        return respository.findAllClientes();
     }
 
     @Override
@@ -76,7 +88,7 @@ public class ClienteService implements IClienteService {
     }
 
     @Override
-    public Optional<PetResponse> obterPetPorId(String id) {
+    public Optional<PetComDonoResponse> obterPetPorId(String id) {
         var pet = petRespository.findPetById(id);
         if(pet.isPresent()){
             return Optional.ofNullable(mapper.converter(pet.get()));
@@ -88,7 +100,13 @@ public class ClienteService implements IClienteService {
     public void deletarPet(DeletarPetCommand command) throws ClienteNotFoundException, ResourceNotFoundException {
         var cliente = verificarSeClienteExiste(command.donoId);
         cliente.deletarPet(command.petId);
-        respository.save(cliente);
+        respository.saveAndFlush(cliente);
+    }
+
+    @Override
+    public PageResponse<ClienteResponse> obterClientes(Pageable pageable) {
+        var page = respository.findAll(pageable);
+        return new PageResponse<>(page.getSize(),page.getTotalPages(),page.getNumber(),page.getTotalElements(),mapper.converter(page.getContent()));
     }
 
     private void verificarSeClienteJaEstaCadastrado(String email) throws ClienteAlreadyRegisteredException {
