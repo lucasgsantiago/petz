@@ -1,9 +1,14 @@
 package com.petz.avaliacao.presentation.controllers;
 
+import com.petz.avaliacao.application.commands.cliente.AdicionarPetCommand;
+import com.petz.avaliacao.application.commands.cliente.AlterarClienteCommand;
+import com.petz.avaliacao.application.commands.cliente.AlterarPetCommand;
 import com.petz.avaliacao.application.commands.cliente.CriarClienteCommand;
 import com.petz.avaliacao.application.queries.cliente.projections.ClienteComPetsProjection;
 import com.petz.avaliacao.application.queries.cliente.responses.ClienteResponse;
 import com.petz.avaliacao.application.queries.cliente.responses.PageResponse;
+import com.petz.avaliacao.application.queries.cliente.responses.PetComDonoResponse;
+import com.petz.avaliacao.application.queries.cliente.responses.PetResponse;
 import com.petz.avaliacao.wrapers.BusinessException;
 import com.petz.avaliacao.wrapers.ClienteAlreadyRegisteredException;
 import com.petz.avaliacao.wrapers.ClienteNotFoundException;
@@ -25,30 +30,76 @@ import java.util.List;
 @Api("Gerenciamento de Clientes e Pets")
 public interface IClienteControllerDocs {
 
-    @ApiOperation(value = "Cliente creation operation")
+    @ApiOperation(value = "Cria um Cliente")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Success beer creation"),
-            @ApiResponse(code = 400, message = "Missing required fields or wrong field range value.")
+            @ApiResponse(code = 201, message = "Cliente criado com sucesso."),
+            @ApiResponse(code = 400, message = "Cliente com o email informado já está registrado no sistema.")
     })
-    ResponseEntity<?> criarCliente(@Valid @RequestBody CriarClienteCommand command) throws ClienteAlreadyRegisteredException, BusinessException;
+    ResponseEntity<?> criarCliente(@Valid @RequestBody CriarClienteCommand command) throws ClienteAlreadyRegisteredException;
 
-    @ApiOperation(value = "Returns beer found by a given name")
+    @ApiOperation(value = "Atualiza um Cliente dado um Id válido")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success beer found in the system"),
-            @ApiResponse(code = 404, message = "Beer with given name not found.")
+            @ApiResponse(code = 201, message = "Cliente alterado com sucesso."),
+            @ApiResponse(code = 404, message = "Cliente não encontrado."),
+            @ApiResponse(code = 400, message = "Existe um outro Cliente cadastrado com este e-mail!"),
+            @ApiResponse(code = 400, message = "Cliente já está registrado no sistema.")
+    })
+    ResponseEntity<?> alterarCliente(@PathVariable String id, @Valid @RequestBody AlterarClienteCommand command) throws BusinessException, ResourceNotFoundException, ClienteNotFoundException;
+
+    @ApiOperation(value = "Retorna um Cliente a partir de um Id válido")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Cliente encontrado com sucesso"),
+            @ApiResponse(code = 404, message = "Cliente não encontrado.")
     })
     ClienteComPetsProjection obterCliente(@PathVariable String id) throws ClienteNotFoundException;
 
-    @ApiOperation(value = "Returns a list of all beers registered in the system")
+    @ApiOperation(value = "Retorna uma lista paginada de Clientes")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "List of all beers registered in the system"),
+            @ApiResponse(code = 200, message = "Lista de Clientes registrados no sistema"),
     })
     PageResponse<ClienteResponse> obterClientes(@PageableDefault(value = 20, sort = "nome",size = 20,page = 0, direction = Sort.Direction.ASC) Pageable pageable);
 
-    @ApiOperation(value = "Delete a beer found by a given valid Id")
+    @ApiOperation(value = "Deleta Cliente encontrado a partir de um Id válido")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "Success beer deleted in the system"),
-            @ApiResponse(code = 404, message = "Beer with given id not found.")
+            @ApiResponse(code = 204, message = "Cliente deletado com sucesso."),
+            @ApiResponse(code = 404, message = "Cliente não encontrado.")
     })
-    void delete(@PathVariable String id) throws ClienteNotFoundException, ResourceNotFoundException;
+    void deletarCliente(@PathVariable String id) throws ClienteNotFoundException, ResourceNotFoundException;
+
+    @ApiOperation(value = "Retorna uma lista de Pets a partir de um Id de um Cliente válido.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Lista de Pets registrados no sistema"),
+    })
+    List<PetResponse> obterPets(@PathVariable String id) throws ResourceNotFoundException, ClienteNotFoundException;
+
+    @ApiOperation(value = "Retorna um Pet encontrado a partir de um Id de um Cliente válido e um Id de Pet válido")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Pet deletado com sucesso."),
+            @ApiResponse(code = 404, message = "Cliente não encontrado."),
+            @ApiResponse(code = 404, message = "Pet não encontrado.")
+    })
+    ResponseEntity<PetComDonoResponse> obterPetPorId(@PathVariable String id, @PathVariable String petId) throws ResourceNotFoundException;
+
+    @ApiOperation(value = "Adiciona um Pet a um Cliente válido.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Pet adicionado com sucesso."),
+            @ApiResponse(code = 404, message = "Cliente não encontrado."),
+    })
+    ResponseEntity<?> adicionarPet(@PathVariable String id,@Valid @RequestBody AdicionarPetCommand command) throws ResourceNotFoundException, ClienteNotFoundException;
+
+    @ApiOperation(value = "Atualiza um Pet dado um Id de um Cliente válido e um Id de Pet válido.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Pet alterado com sucesso."),
+            @ApiResponse(code = 404, message = "Cliente não encontrado."),
+            @ApiResponse(code = 404, message = "Pet não encontrado.")
+    })
+    ResponseEntity<?> atualizarPet(@PathVariable String id, @PathVariable String petId,@Valid @RequestBody AlterarPetCommand command) throws ResourceNotFoundException, ClienteNotFoundException;
+
+    @ApiOperation(value = "Deleta Pet encontrado a partir de um Id de um Cliente válido e um Id de Pet válido")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Pet deletado com sucesso."),
+            @ApiResponse(code = 404, message = "Cliente não encontrado."),
+            @ApiResponse(code = 404, message = "Pet não encontrado.")
+    })
+    void deletarPet(@PathVariable String id,@PathVariable String petId) throws ResourceNotFoundException, ClienteNotFoundException;
 }

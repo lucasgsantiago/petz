@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public interface IClienteService {
 
-    void adicionarCliente(CriarClienteCommand command) throws BusinessException, ClienteAlreadyRegisteredException;
+    void adicionarCliente(CriarClienteCommand command) throws ClienteAlreadyRegisteredException;
     void alterarCliente(AlterarClienteCommand command) throws BusinessException, ResourceNotFoundException, ClienteNotFoundException;
     void deletarCliente(String id) throws ResourceNotFoundException, ClienteNotFoundException;
     List<ClienteResponse> obterTodos();

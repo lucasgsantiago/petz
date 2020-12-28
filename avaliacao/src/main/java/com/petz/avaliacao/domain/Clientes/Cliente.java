@@ -2,6 +2,7 @@ package com.petz.avaliacao.domain.clientes;
 
 import com.petz.avaliacao.wrapers.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Entity
 @Data
 @AllArgsConstructor
+@Builder
 public class Cliente implements Serializable {
 
     @Id
@@ -31,6 +33,7 @@ public class Cliente implements Serializable {
 
     public Cliente() {
         this.pets = new HashSet<>();
+        this.dataCriacao = new Date();
     }
 
     public Cliente(String id, String nome, String email) {
