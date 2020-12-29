@@ -1,4 +1,4 @@
-package com.petz.apiclientes.application.queries.cliente.projections;
+package com.petz.apiclientes.application.queries.cliente.responses;
 
 import java.util.Set;
 

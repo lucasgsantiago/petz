@@ -1,7 +1,7 @@
 package com.petz.apiclientes.application.services;
 
 import com.petz.apiclientes.application.commands.cliente.*;
-import com.petz.apiclientes.application.queries.cliente.projections.ClienteComPetsProjection;
+import com.petz.apiclientes.application.queries.cliente.responses.ClienteComPetsProjection;
 import com.petz.apiclientes.application.queries.cliente.responses.ClienteResponse;
 import com.petz.apiclientes.application.queries.cliente.responses.PageResponse;
 import com.petz.apiclientes.application.queries.cliente.responses.PetComDonoResponse;

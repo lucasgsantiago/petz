@@ -1,6 +1,6 @@
 package com.petz.apiclientes.domain.clientes;
 
-import com.petz.apiclientes.application.queries.cliente.projections.ClienteComPetsProjection;
+import com.petz.apiclientes.application.queries.cliente.responses.ClienteComPetsProjection;
 import com.petz.apiclientes.application.queries.cliente.responses.ClienteResponse;
 
 import java.util.List;

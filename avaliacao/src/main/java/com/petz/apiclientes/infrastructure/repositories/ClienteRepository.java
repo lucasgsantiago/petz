@@ -1,6 +1,6 @@
 package com.petz.apiclientes.infrastructure.repositories;
 
-import com.petz.apiclientes.application.queries.cliente.projections.ClienteComPetsProjection;
+import com.petz.apiclientes.application.queries.cliente.responses.ClienteComPetsProjection;
 import com.petz.apiclientes.application.queries.cliente.responses.ClienteResponse;
 import com.petz.apiclientes.domain.clientes.Cliente;
 import com.petz.apiclientes.domain.clientes.IClienteRepository;

@@ -4,7 +4,7 @@ import com.petz.apiclientes.application.commands.cliente.AdicionarPetCommand;
 import com.petz.apiclientes.application.commands.cliente.AlterarClienteCommand;
 import com.petz.apiclientes.application.commands.cliente.AlterarPetCommand;
 import com.petz.apiclientes.application.commands.cliente.CriarClienteCommand;
-import com.petz.apiclientes.application.queries.cliente.projections.ClienteComPetsProjection;
+import com.petz.apiclientes.application.queries.cliente.responses.ClienteComPetsProjection;
 import com.petz.apiclientes.application.queries.cliente.responses.ClienteResponse;
 import com.petz.apiclientes.application.queries.cliente.responses.PageResponse;
 import com.petz.apiclientes.application.queries.cliente.responses.PetComDonoResponse;
