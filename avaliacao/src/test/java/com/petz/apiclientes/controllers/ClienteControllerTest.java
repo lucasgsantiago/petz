@@ -18,11 +18,13 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import java.util.UUID;
 
 import static com.petz.apiclientes.utils.JsonConvertionUtils.asJsonString;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(MockitoExtension.class)
 public class ClienteControllerTest {
@@ -57,7 +59,8 @@ public class ClienteControllerTest {
         mockMvc.perform(post(RESOURCE_API_URL_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(command)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.correlationId", is(command.id)));
     }
 
     @Test
