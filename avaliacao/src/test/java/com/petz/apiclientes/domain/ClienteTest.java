@@ -5,6 +5,8 @@ import com.petz.apiclientes.domain.clientes.Pet;
 import com.petz.apiclientes.wrappers.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Calendar;
 import java.util.HashSet;
@@ -15,6 +17,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(MockitoExtension.class)
 public class ClienteTest {
 
     private Cliente cliente;
@@ -90,5 +93,18 @@ public class ClienteTest {
         var cliente = new Cliente();
 
         assertThrows(ResourceNotFoundException.class, () -> cliente.deletarPet(pet.getId()));
+    }
+
+    @Test
+    public void deletar_Pet_Que_Nao_Existe_Na_Lista_Deve_Lancar_Uma_Exception() {
+        var pet = new Pet(UUID.randomUUID().toString(),"pet teste",2);
+        var pets = new HashSet<Pet>();
+        pets.add(pet);
+        var cliente = new Cliente().builder()
+                .id(UUID.randomUUID().toString())
+                .pets(pets)
+                .build();
+
+        assertThrows(ResourceNotFoundException.class, () -> cliente.deletarPet(UUID.randomUUID().toString()));
     }
 }
