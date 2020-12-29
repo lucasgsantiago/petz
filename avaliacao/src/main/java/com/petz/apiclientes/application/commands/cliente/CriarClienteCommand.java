@@ -10,7 +10,7 @@ import java.util.UUID;
 public class CriarClienteCommand {
     public String id = UUID.randomUUID().toString();
     @NotNull
-    @Size(max = 50)
+    @Size(max = 60)
     public String nome;
     @NotNull
     @Email

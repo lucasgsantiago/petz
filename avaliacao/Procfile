@@ -1,1 +1,1 @@
-web: java -jar build/libs/avaliacao-0.0.1-SNAPSHOT.jar
+web: java -jar build/libs/api-clientes-0.0.1-SNAPSHOT.jar
