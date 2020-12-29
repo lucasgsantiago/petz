@@ -55,7 +55,7 @@ public class ClienteService implements IClienteService {
     @Override
     public ClienteComPetsProjection obterPorId(String id) throws ClienteNotFoundException {
         if(id == null ) throw new IllegalArgumentException("Identificador inválido:" + id);
-        var cliente = verificarSeClienteExiste(id);
+        verificarSeClienteExiste(id);
         return respository.findClienteById(id,ClienteComPetsProjection.class);
     }
 

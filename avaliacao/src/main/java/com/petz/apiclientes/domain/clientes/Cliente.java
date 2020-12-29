@@ -4,6 +4,7 @@ import com.petz.apiclientes.wrappers.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.internal.util.StringHelper;
 
 import javax.persistence.*;
@@ -27,6 +28,7 @@ public class Cliente implements Serializable {
     private String email;
     @NotNull
     private Date dataCriacao;
+
     private Date dataUltimaAlteracao;
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "dono", fetch = FetchType.EAGER, orphanRemoval = true)
@@ -56,13 +58,9 @@ public class Cliente implements Serializable {
     }
 
     public void alterarPet(Pet newPet) throws ResourceNotFoundException {
-        if(pets.isEmpty()) throw new ResourceNotFoundException("Este Cliente não possui nenhum Pet cadastrado");
-        var pet = pets.stream().filter(p -> p.getId().equalsIgnoreCase(newPet.getId())).findFirst();
-        if(pet.isPresent()){
-            pet.get().atualizar(newPet.getNome(),newPet.getIdade());
-        }else{
-            throw new ResourceNotFoundException("Nenhum Pet foi encontrado com este Id: "+newPet.getId());
-        }
+        if(pets.isEmpty()) throw new ResourceNotFoundException("Nenhum Pet foi encontrado para esse Cliente");
+        var pet = obterPet(newPet.getId());
+        pet.atualizar(newPet.getNome(),newPet.getIdade());
     }
 
     public void alterar(String nome, String email) {
@@ -72,16 +70,22 @@ public class Cliente implements Serializable {
     }
 
     public void deletarPet(String petId) throws ResourceNotFoundException {
-        if(pets.isEmpty()) throw new ResourceNotFoundException("Nenhum Pet foi encontrado com este Id: "+petId);
+        if(pets.isEmpty()) throw new ResourceNotFoundException("Nenhum Pet foi encontrado para esse Cliente");
+        var pet = obterPet(petId);
+        pets.remove(pet);
+    }
+
+    public Pet obterPet(String petId) throws ResourceNotFoundException {
         var optPet = pets.stream().filter(pet -> pet.getId().equalsIgnoreCase(petId)).findFirst();
-        if(optPet.isPresent()){
-            pets.remove(optPet.get());
+        if(!optPet.isPresent()){
+            throw new ResourceNotFoundException("Nenhum Pet foi encontrado com este Id: "+petId);
         }
+        return optPet.get();
     }
 
     private void validarPet(Pet pet){
         if(StringHelper.isEmpty(pet.getId()) || StringHelper.isEmpty(pet.getNome()) || pet.getIdade() == null){
-            throw new IllegalArgumentException("Valores de campos obrigatórios para criação de um Pet não foram informados ou são inválidos");
+            throw new IllegalArgumentException("Campos obrigatórios para criação de um Pet não foram informados ou são inválidos");
         }
     }
 
