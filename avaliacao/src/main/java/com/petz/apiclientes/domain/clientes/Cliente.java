@@ -4,11 +4,12 @@ import com.petz.apiclientes.wrappers.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.internal.util.StringHelper;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -21,12 +22,20 @@ import java.util.Set;
 public class Cliente implements Serializable {
 
     @Id
+    @Column(length = 36)
     private String id;
+
     @NotNull
+    @Column(length = 60)
     private String nome;
+
     @NotNull
+    @Column(length = 254, unique = true)
     private String email;
+
     @NotNull
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dataCriacao;
 
     private Date dataUltimaAlteracao;

@@ -1,6 +1,10 @@
 package com.petz.apiclientes.domain.clientes;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,14 +20,23 @@ import java.util.Objects;
 public class Pet implements Serializable {
 
     @Id
+    @Column(length = 36)
     private String id;
+
     @NotNull
+    @Column(length = 20)
     private String nome;
+
     @NotNull
     private Integer idade;
+
     @NotNull
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dataCriacao;
+
     private Date dataUltimaAlteracao;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Cliente dono;
 
