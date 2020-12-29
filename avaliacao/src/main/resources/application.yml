@@ -1,7 +1,7 @@
 spring:
     jpa:
         hibernate:
-            #ddl-auto: create-drop
+            ddl-auto: create-drop
         show-sql: true
     h2:
         console:
@@ -10,5 +10,5 @@ spring:
     datasource:
         url: jdbc:h2:file:~/petz
         username: sa
-        password: admin
+        password:
         driver-class-name: org.h2.Driver
