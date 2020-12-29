@@ -4,6 +4,8 @@ import com.petz.avaliacao.wrapers.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.internal.util.StringHelper;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -45,6 +47,7 @@ public class Cliente implements Serializable {
     }
 
     public void adicionarPet(Pet pet){
+        validarPet(pet);
         if(pets == null){
             pets = new HashSet<>();
         }
@@ -75,7 +78,12 @@ public class Cliente implements Serializable {
         if(optPet.isPresent()){
             pets.remove(optPet.get());
         }
+    }
 
+    private void validarPet(Pet pet){
+        if(StringHelper.isEmpty(pet.getId()) || StringHelper.isEmpty(pet.getNome()) || pet.getIdade() == null){
+            throw new IllegalArgumentException("Valores de campos obrigatórios para criação de um Pet não foram informados ou são inválidos");
+        }
     }
 
 }

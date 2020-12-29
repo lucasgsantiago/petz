@@ -20,7 +20,7 @@ public class Pet implements Serializable {
     @NotNull
     private String nome;
     @NotNull
-    private int idade;
+    private Integer idade;
     @NotNull
     private Date dataCriacao;
     private Date dataUltimaAlteracao;
@@ -31,7 +31,14 @@ public class Pet implements Serializable {
         this.id = id;
     }
 
-    public void atualizar(String nome, int idade){
+    public Pet(String id,String nome, Integer idade){
+        this.id = id;
+        this.nome = nome;
+        this.idade = idade;
+        this.dataCriacao = new Date();
+    }
+
+    public void atualizar(String nome, Integer idade){
         this.nome = nome;
         this.idade = idade;
         this.dataUltimaAlteracao = new Date();

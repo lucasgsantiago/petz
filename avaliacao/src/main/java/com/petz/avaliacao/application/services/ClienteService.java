@@ -58,16 +58,11 @@ public class ClienteService implements IClienteService {
     public ClienteComPetsProjection obterPorId(String id) throws ClienteNotFoundException {
         if(id == null ) throw new IllegalArgumentException("Identificador inválido:" + id);
         var cliente = verificarSeClienteExiste(id);
-        //return mapper.converter(cliente);
-        //return respository.findClienteById(id);
         return respository.findClienteById(id,ClienteComPetsProjection.class);
     }
 
     @Override
     public List<ClienteResponse> obterTodos(){
-//        return mapper.converter(respository.findAll());
-        //return mapper.converter(respository.buscarTodosClientes());
-        //return respository.buscarTodosClientes();
         return respository.findAllClientes();
     }
 
