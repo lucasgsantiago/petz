@@ -1,5 +1,6 @@
 package com.petz.apiclientes.application.commands.cliente;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
@@ -8,6 +9,7 @@ import javax.validation.constraints.Size;
 import java.util.UUID;
 @NoArgsConstructor
 public class AdicionarPetCommand {
+    @JsonIgnore
     public String id = UUID.randomUUID().toString();
     public String donoId;
     @NotNull
