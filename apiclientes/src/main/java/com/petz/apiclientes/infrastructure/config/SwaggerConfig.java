@@ -15,7 +15,7 @@ import static springfox.documentation.builders.RequestHandlerSelectors.*;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-    private static final String BASE_PACKAGE = "com.petz.avaliacao.presentation.controllers";
+    private static final String BASE_PACKAGE = "com.petz.apiclientes.presentation.controllers";
     private static final String API_TITLE = "API de Gerenciamento de Clientes e Pets";
     private static final String API_DESCRIPTION = "API REST para Gerenciamento de Clientes e Pets";
     private static final String CONTACT_NAME = "Lucas Gomes Santiago";
