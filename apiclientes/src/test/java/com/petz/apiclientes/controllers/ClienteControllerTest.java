@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.Equals;
+import org.mockito.internal.matchers.NotNull;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
@@ -22,6 +24,7 @@ import java.util.UUID;
 import static com.petz.apiclientes.utils.JsonConvertionUtils.asJsonString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -62,8 +65,7 @@ public class ClienteControllerTest {
         mockMvc.perform(post(RESOURCE_API_URL_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(command)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.correlationId", is(command.id)));
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -133,8 +135,7 @@ public class ClienteControllerTest {
                 post(new StringBuilder(RESOURCE_API_URL_PATH).append("/").append(clienteId).append("/pets").toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(command)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.correlationId", is(command.id)));
+                .andExpect(status().isCreated());
     }
 
 
